@@ -31,6 +31,8 @@
 			<arg value="dir ${build.pastaArtefato}"/>
 		</exec>
 
+		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>
+
 	</target>
 
 
