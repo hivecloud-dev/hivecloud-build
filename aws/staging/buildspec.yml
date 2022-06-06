@@ -12,6 +12,8 @@ phases:
       - cp aws/staging/settings.xml ~/.m2/settings.xml
       - echo "Executando a acao de ${ACAO} para o projeto ${PROJETO}"
       - echo "BuildID ${CODEBUILD_BUILD_ID}"
+      - echo ${CODEBUILD_SRC_DIR_BuildArtifact}
+      - echo ${PASTAARTEFATO}
       - mvn dependency:get -DgroupId=ant-contrib -DartifactId=ant-contrib -Dversion=1.0b3
 
   pre_build:
