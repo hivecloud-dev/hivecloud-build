@@ -4,6 +4,7 @@ env:
   variables:
     TZ: "America/Sao_Paulo"
     buildFile: "aws/staging/build.xml"
+    PASTAARTEFATO: "$CODEBUILD_SRC_DIR_BuildArtifact"
 
 phases:
   install:
