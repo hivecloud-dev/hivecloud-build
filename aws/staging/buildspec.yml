@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  variables:
+    TZ: "America/Sao_Paulo"
+    buildFile: "aws/staging/build.xml"
+
+phases:
+  install:
+    commands:
+      - cp aws/staging/settings.xml ~/.m2/settings.xml
+      - echo "Executando a acao de ${ACAO} para o projeto ${PROJETO}"
+      - echo "BuildID ${CODEBUILD_BUILD_ID}"
+      - mvn dependency:get -DgroupId=ant-contrib -DartifactId=ant-contrib -Dversion=1.0b3
+
+  pre_build:
+    commands:
+      - ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
+
+  build:
+    commands:
+      - echo Build started
+
+      #- git status
+      - ant -f ${buildFile} do-magic
+
+  post_build:
+    commands:
+      - echo Build completed
