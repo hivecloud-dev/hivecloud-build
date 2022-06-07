@@ -30,7 +30,7 @@
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
-			<arg value="eval \${${env.ARTEFATO}}"/>
+			<arg value="eval echo \${${env.ARTEFATO}}"/>
 		</exec>
 
 		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>
