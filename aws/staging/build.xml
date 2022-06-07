@@ -1,5 +1,5 @@
 <project name="hivelog-cte" basedir="../../">
-
+	<property environment="env"/>
 	<!-- adiciona o ant-contrib, biblioteca que disponibiliza diversos comando adicionais ao ant -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
 			 classpath="${user.home}/.m2/repository/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar"/>
