@@ -23,13 +23,14 @@
 		<echo>${build.source}</echo>
 		<echo>${build.tstamp}</echo>
 		<echo>${env.PASTAREAL}</echo>
+		<echo>${PASTAREAL}</echo>
 
 		<propertycopy property="build.pastareal" from="env.${build.pastaArtefato}" />
 		<echo>${build.pastareal}</echo>
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
-			<arg value="eval \$$env.ARTEFATO"/>
+			<arg value="eval \${${env.ARTEFATO}}"/>
 		</exec>
 
 		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>

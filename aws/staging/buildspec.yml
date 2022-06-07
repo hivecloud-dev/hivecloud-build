@@ -16,6 +16,7 @@ phases:
       - echo $ARTEFATO
       - eval echo \$$ARTEFATO
       - PASTAREAL=eval echo \$$ARTEFATO
+      - echo $PASTAREAL
       - mvn dependency:get -DgroupId=ant-contrib -DartifactId=ant-contrib -Dversion=1.0b3
 
   pre_build:
