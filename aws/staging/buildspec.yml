@@ -25,3 +25,6 @@ phases:
   post_build:
     commands:
       - echo Build completed
+cache:
+  paths:
+    - '/root/.m2/**/*'
