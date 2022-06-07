@@ -15,12 +15,18 @@
 	<target name = "do-magic" description="metodo inicial">
 
 		<echo>${build.projeto}</echo>
+		<echo>${env.PROJETO}</echo>
 		<echo>${build.acao}</echo>
 		<echo>${build.pastaArtefato}</echo>
 		<echo>${build.id}</echo>
 		<echo>${build.source}</echo>
 		<echo>${build.tstamp}</echo>
 		<echo>${ARTEFATOFOLDER}</echo>
+
+		<exec executable="/bin/sh" failonerror="true">
+			<arg value="-c" />
+			<arg value="echo ${build.projeto}"/>
+		</exec>
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
