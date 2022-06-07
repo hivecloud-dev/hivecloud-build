@@ -16,22 +16,15 @@
 
 	<target name = "do-magic" description="metodo inicial">
 
-		<echo>${build.projeto}</echo>
-		<echo>${build.acao}</echo>
-		<echo>${build.pastaArtefato}</echo>
-		<echo>${build.id}</echo>
-		<echo>${build.source}</echo>
-		<echo>${build.tstamp}</echo>
-		<echo>${env.PASTAREAL}</echo>
-		<echo>${PASTAREAL}</echo>
+		<echo>"${env.PROJETO}" ${build.projeto}</echo>
+		<echo>"${env.ACAO}" ${build.acao}</echo>
+		<echo>"${env.CODEBUILD_BUILD_ID}" ${build.id}</echo>
+		<echo>"${env.CODEBUILD_SOURCE_VERSION}" ${build.source}</echo>
+		<echo>"${env.CODEBUILD_START_TIME}" ${build.tstamp}</echo>
+		<echo>"${env.PASTAREAL}" ${env.PASTAREAL}</echo>
 
 		<propertycopy property="build.pastareal" from="env.${build.pastaArtefato}" />
 		<echo>${build.pastareal}</echo>
-
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="-c" />
-			<arg value="eval echo \${${env.ARTEFATO}}"/>
-		</exec>
 
 		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>
 
