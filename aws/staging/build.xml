@@ -4,6 +4,8 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml"
 			 classpath="${user.home}/.m2/repository/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar"/>
 
+
+
 	<!-- Propriedades do Build runtime-->
 	<property name="build.projeto" value="${env.PROJETO}"/>
 	<property name="build.acao" value="${env.ACAO}"/>
@@ -15,18 +17,11 @@
 	<target name = "do-magic" description="metodo inicial">
 
 		<echo>${build.projeto}</echo>
-		<echo>${env.PROJETO}</echo>
 		<echo>${build.acao}</echo>
 		<echo>${build.pastaArtefato}</echo>
 		<echo>${build.id}</echo>
 		<echo>${build.source}</echo>
 		<echo>${build.tstamp}</echo>
-		<echo>${ARTEFATOFOLDER}</echo>
-
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="-c" />
-			<arg value="echo ${build.projeto}"/>
-		</exec>
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
@@ -35,7 +30,15 @@
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
-			<arg value="dir ${build.pastaArtefato}"/>
+			<arg value="dir ${env.CODEBUILD_SRC_DIR_BuildArtifact}"/>
+		</exec>
+
+		<propertycopy property="build.pastareal" from="${build.pastaArtefato}" />
+		<echo>${build.pastareal}</echo>
+
+		<exec executable="/bin/sh" failonerror="true">
+			<arg value="-c" />
+			<arg value="eval "/>
 		</exec>
 
 		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>

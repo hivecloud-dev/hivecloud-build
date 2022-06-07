@@ -13,6 +13,9 @@ phases:
       - echo "BuildID ${CODEBUILD_BUILD_ID}"
       - echo ${CODEBUILD_SRC_DIR_BuildArtifact}
       - echo ${ARTEFATO}
+      - echo $ARTEFATO
+      - echo ${{ARTEFATO}}
+      - eval echo \$$ARTEFATO
       - mvn dependency:get -DgroupId=ant-contrib -DartifactId=ant-contrib -Dversion=1.0b3
 
   pre_build:
