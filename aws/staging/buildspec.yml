@@ -20,8 +20,8 @@ phases:
   build:
     commands:
       - echo Build started
-      - ant -f ${buildFile} do-magic
-      - ant -f ${buildFile} deploy-app
+      - ant -f ${buildFile} implantar-app
+      - ant -f ${buildFile} ligar-desligar-servidor
 
   post_build:
     commands:

@@ -14,63 +14,153 @@
 	<property name="build.id" value="${env.CODEBUILD_BUILD_ID}"/>
 	<property name="build.tstamp" value="${env.CODEBUILD_START_TIME}"/>
 
-	<propertycopy property="sql.host" from="environment.${build.server}.db.host" />
+	<propertycopy property="build.projectName" from="${build.projeto}.projectName" />
+	<propertycopy property="build.environmentName" from="${build.projeto}.environmentName" />
+	<propertycopy property="build.environmentCName" from="${build.projeto}.environmentCName" />
+	<propertycopy property="build.templateName" from="${build.projeto}.templateName" />
 
 	<exec executable="/bin/sh" outputproperty ="build.uuid">
 		<arg value="-c" />
 		<arg value="echo ${build.id} | cut -d: -f2" />
 	</exec>
 
+	<property name="deploy.folder" value="deployTemp"/>
+	<property name="deploy.warpath" value="${deploy.folder}/${build.uuid}.war"/>
+	<property name="deploy.s3name" value="${build.projectName}/${build.uuid}.war"/>
 
-	<target name = "do-magic" description="metodo inicial">
-
-		<echo>"env.PROJETO" ${env.PROJETO}</echo>
-		<echo>"env.ACAO" ${env.ACAO}</echo>
-		<echo>"env.CODEBUILD_BUILD_ID" ${env.CODEBUILD_BUILD_ID}</echo>
-		<echo>"env.CODEBUILD_SOURCE_VERSION" ${env.CODEBUILD_SOURCE_VERSION}</echo>
-		<echo>"env.CODEBUILD_START_TIME" ${env.CODEBUILD_START_TIME}</echo>
-		<echo>"env.PASTAREAL" ${env.PASTAREAL}</echo>
-
-	</target>
-
-	<target name="deploy-app"
+	<target name="implantar-app"
 	description="A partir do nome do projeto, coloca o artefato compilado no elasticbeanstalk">
 
-		<property name="deploy.folder" value="deployTemp"/>
-		<property name="deploy.warpath" value="${deploy.folder}/${build.uuid}.war"/>
+
 		<mkdir dir="${deploy.folder}" />
 		<zip destfile="${deploy.warpath}" basedir="${build.pastacompilado}" />
 
 		<property name="deploy.description" value="deploy automático para o staging"/>
 
 		<create-application-version
-				application.name="${build.projeto}"
+				application.name="${build.projectName}"
 				localPath="${deploy.warpath}"
-				s3Name="${deploy.warpath}"
+				s3Name="${deploy.s3name}"
 				description="${deploy.description}"
 				versionLabel="${build.uuid}" />
 
 	</target>
 
+	<target name="ligar-desligar-servidor" description="Liga, atualiza ou desliga o servidor selecionado">
+
+		<if>
+			<equals arg1="${build.acao}" arg2="LIGAR" />
+			<then>
+				<antcall target="ligar-servidor"/>
+			</then>
+			<else>
+				<antcall target="desligar-servidor"/>
+			</else>
+		</if>
+
+	</target>
+
+	<target name="ligar-servidor" description="Cria ou atualiza o servidor selecionado">
+
+		<echo>Application Label ${build.uuid}</echo>
+		<antcallback target="checar-servidor" return="server.color" />
+
+		<if>
+			<equals arg1="${server.color}" arg2="" />
+			<then>
+				<antcall target="criar-servidor"/>
+			</then>
+			<else>
+				<if>
+					<equals arg1="${server.color}" arg2="Terminated" />
+					<then>
+						<antcall target="criar-servidor"/>
+					</then>
+					<else>
+						<antcall target="atualizar-servidor"/>
+					</else>
+				</if>
+			</else>
+		</if>
+
+	</target>
+
+	<target name="desligar-servidor" description="Desliga o servidor selecionado">
+
+		<echo>Application Label ${build.uuid}</echo>
+		<antcallback target="checar-servidor" return="server.color" />
+
+		<if>
+			<equals arg1="${server.color}" arg2="" />
+			<then>
+				<echo>Servidor já está morto, nada a fazer</echo>
+			</then>
+			<else>
+				<if>
+					<equals arg1="${server.color}" arg2="Terminated" />
+					<then>
+						<echo>Servidor já está morto, nada a fazer</echo>
+					</then>
+					<else>
+						<antcall target="matar-servidor"/>
+					</else>
+				</if>
+			</else>
+		</if>
+
+	</target>
+
 	<!-- Retorna o nome do servidor, caso este esteja ativo -->
-	<target name="-check-environment">
+	<target name="checar-servidor"
+			description="verifica qual o estado do ">
 
 		<!-- exibe a consulta para referencias -->
-		<echo>"aws elasticbeanstalk describe-environments --application-name='${elb.application.name}' | grep ${environment.name}"</echo>
+		<echo>"aws elasticbeanstalk describe-environments --application-name='${build.projectName}' | grep ${build.environmentName}"</echo>
 
 		<exec executable="/bin/sh" outputproperty="server.color"  failonerror="true">
 			<arg value="-c" />
 			<arg value="aws elasticbeanstalk describe-environments
-			--application-name='${build.projeto}'
+			--application-name='${build.projectName}'
 			--output text
-			| grep ${environment.name}
+			| grep ${build.environmentName}
 			| head -n 1
 			| cut -f 16" />
 		</exec>
 
+		<echo>"COLOR - ${server.color}"</echo>
 
-		<echo>"ON - ${server.on} COLOR - ${server.color}"</echo>
+	</target>
 
+	<!-- Lança um servidor -->
+	<target name="criar-servidor" >
+		<exec executable="/bin/sh"  failonerror="true">
+			<arg value="-c" />
+			<arg value="aws elasticbeanstalk create-environment
+			--application-name &quot;${build.projectName}&quot;
+			--version-label &quot;${build.uuid}&quot;
+			--environment-name &quot;${build.environmentName}&quot;
+			--description &quot;${build.environmentName}&quot;
+			--cname-prefix &quot;${build.environmentCName}&quot;
+			--template-name &quot;${build.templateName}&quot;" />
+		</exec>
+	</target>
+
+	<!-- atualiza um servidor -->
+	<target name="atualizar-servidor" >
+		<exec executable="/bin/sh"  failonerror="true">
+			<arg value="-c" />
+			<arg value="aws elasticbeanstalk update-environment
+			--version-label &quot;${build.uuid}&quot;
+			--environment-name &quot;${build.environmentName}&quot;" />
+		</exec>
+	</target>
+
+	<target name="matar-servidor" >
+		<exec executable="/bin/sh"  failonerror="true">
+			<arg value="-c" />
+			<arg value="aws elasticbeanstalk terminate-environment
+			--environment-name &quot;${build.environmentName}&quot;" />
+		</exec>
 	</target>
 
 	<macrodef name="create-application-version">
