@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.hivelog</groupId>
+    <artifactId>hivelog-build</artifactId>
+    <packaging>war</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Hivecloud - Live</name>
+    <scm>
+        <url>https://github.com/hivecloud-dev/hivelog-build.git</url>
+        <connection>scm:git:https://github.com/hivecloud-dev/hivelog-build.git</connection>
+    </scm>
+    <properties>
+        <project.build.sourceEncoding>utf8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <distributionManagement>
+        <repository>
+            <id>com.hivecloud.mvnrepo</id>
+            <name>Hive.cloud Repository for Maven</name>
+            <url>s3://mvnrepo.hivecloud.com.br</url>
+        </repository>
+    </distributionManagement>
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>com.hivecloud.mvnrepo-central</id>
+            <name>Hive.cloud Repository for Maven</name>
+            <url>https://mvnrepo-central.hivecloud.com.br</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>com.hivecloud.mvnrepo-central</id>
+            <name>Hive.cloud Repository for Maven</name>
+            <url>https://mvnrepo-central.hivecloud.com.br</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>com.hivecloud.mvnrepo</id>
+            <name>Hive.cloud Repository for Maven</name>
+            <url>s3://mvnrepo.hivecloud.com.br</url>
+        </repository>
+    </repositories>
+</project>

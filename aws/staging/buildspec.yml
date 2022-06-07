@@ -11,8 +11,8 @@ phases:
       - cp aws/staging/settings.xml ~/.m2/settings.xml
       - mvn dependency:get -DgroupId=ant-contrib -DartifactId=ant-contrib -Dversion=1.0b3
       - echo "Executando a acao de ${ACAO} para o projeto ${PROJETO}"
-      - eval PASTAREAL=\$$ARTEFATO
-      - echo $PASTAREAL
+      - eval PASTACOMPILADO=\$$ARTEFATO
+      - echo $PASTACOMPILADO
   pre_build:
     commands:
       - ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
@@ -21,6 +21,7 @@ phases:
     commands:
       - echo Build started
       - ant -f ${buildFile} do-magic
+      - ant -f ${buildFile} deploy-app
 
   post_build:
     commands:
