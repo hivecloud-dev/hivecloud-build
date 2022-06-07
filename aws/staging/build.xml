@@ -23,22 +23,12 @@
 		<echo>${build.source}</echo>
 		<echo>${build.tstamp}</echo>
 
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="-c" />
-			<arg value="dir"/>
-		</exec>
-
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="-c" />
-			<arg value="dir ${env.CODEBUILD_SRC_DIR_BuildArtifact}"/>
-		</exec>
-
-		<propertycopy property="build.pastareal" from="${build.pastaArtefato}" />
+		<propertycopy property="build.pastareal" from="env.${build.pastaArtefato}" />
 		<echo>${build.pastareal}</echo>
 
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
-			<arg value="eval "/>
+			<arg value="eval \$$env.ARTEFATO"/>
 		</exec>
 
 		<fail>Tem que falhar, se nao vou precisar rodar o build todas as vezes</fail>
