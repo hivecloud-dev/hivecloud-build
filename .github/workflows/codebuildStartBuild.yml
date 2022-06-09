@@ -15,6 +15,11 @@ on:
         type: string
       thisVersion:
         type: string
+    secrets:
+      SECRET:
+        required: true
+      ACCESS:
+        required: true
 env:
   project-name: ${{ github.event.inputs.projeto }}
   buildspec-override: ${{ github.event.inputs.buildspec }}
@@ -30,8 +35,8 @@ jobs:
       - name: Configurando Credenciais AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
+          aws-access-key-id: ${{ secrets.SECRET }}
+          aws-secret-access-key: ${{ secrets.ACCESS }}
           aws-region: us-east-1
       - name: Obtendo variáveis para Override
         id: override-variables
