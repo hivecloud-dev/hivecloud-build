@@ -18,17 +18,21 @@ on:
       thisVersion:
         type: string
         required: false
+      versionLabel:
+        type: string
+        required: false
     secrets:
       secretKey:
         required: true
       accessKey:
         required: true
 env:
-  project-name: ${{ github.event.inputs.projeto }}
-  buildspec-override: ${{ github.event.inputs.buildspec }}
-  SERVER_TYPE: ${{ github.event.inputs.servidor }}
-  NEXT_VERSION: ${{ github.event.inputs.nextVersion }}
-  THIS_VERSION: ${{ github.event.inputs.thisVersion }}
+  project-name: ${{ inputs.projeto }}
+  buildspec-override: ${{ inputs.buildspec }}
+  SERVER_TYPE: ${{ inputs.servidor }}
+  NEXT_VERSION: ${{ inputs.nextVersion }}
+  THIS_VERSION: ${{ inputs.thisVersion }}
+  VERSION_LABEL: ${{ inputs.versionLabel }}
 
 jobs:
   CodeBuild:
@@ -76,7 +80,7 @@ jobs:
           --source-version $GITHUB_SHA \
           --git-clone-depth-override=1 \
           --output=text \
-          --environment-variables-override '${{ steps.executou.outputs.override }}' > output.txt
+          --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
           echo ::set-output name=buildId::$( cat  output.txt | head -n 1 | cut -f 8 )
       - name: Link na saída
