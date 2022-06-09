@@ -1,4 +1,4 @@
-name: Codebuild StartBuild
+name: 99-Codebuild StartBuild
 
 on:
   workflow_call:
@@ -59,17 +59,20 @@ jobs:
           versionLabel = {};
           versionLabel.name = "VERSION_LABEL";
           versionLabel.value = process.env.VERSION_LABEL;
-          versionLabel.type = "PLAINTEXT"}        
+          versionLabel.type = "PLAINTEXT"}   
+          options.push(versionLabel)}
           if (process.env.THIS_VERSION !== undefined){
           thisVersion = {};
           thisVersion.name = "THIS_VERSION";
           thisVersion.value = process.env.THIS_VERSION;
-          thisVersion.type = "PLAINTEXT"}        
+          thisVersion.type = "PLAINTEXT"}   
+          options.push(thisVersion)}
           if (process.env.NEXT_VERSION !== undefined){
           nextVersion = {};
           nextVersion.name = "NEXT_VERSION";
           nextVersion.value = process.env.NEXT_VERSION;
-          nextVersion.type = "PLAINTEXT"}
+          nextVersion.type = "PLAINTEXT"
+          options.push(nextVersion)}}
           console.log(JSON.stringify(options));' )
       - name: Iniciando o codebuild de fato
         id: start-build
