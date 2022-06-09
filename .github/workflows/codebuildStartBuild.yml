@@ -16,9 +16,9 @@ on:
       thisVersion:
         type: string
     secrets:
-      SECRET:
+      secretKey:
         required: true
-      ACCESS:
+      accessKey:
         required: true
 env:
   project-name: ${{ github.event.inputs.projeto }}
