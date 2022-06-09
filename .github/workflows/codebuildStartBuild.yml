@@ -38,8 +38,8 @@ jobs:
       - name: Configurando Credenciais AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.secretKey }}
-          aws-secret-access-key: ${{ secrets.accessKey }}
+          aws-access-key-id: ${{ secrets.accessKey}}
+          aws-secret-access-key: ${{ secrets.secretKey }}
           aws-region: us-east-1
       - name: Obtendo variáveis para Override
         id: override-variables
