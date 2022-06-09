@@ -15,8 +15,6 @@ on:
         type: string
       thisVersion:
         type: string
-
-
 env:
   project-name: ${{ github.event.inputs.projeto }}
   buildspec-override: ${{ github.event.inputs.buildspec }}
