@@ -49,30 +49,13 @@ jobs:
         id: override-variables
         run: |
           echo ::set-output name=override::$( node -e 'var options =[];
-          if (process.env.SERVER_TYPE !== undefined){
-          serverType = {};
-          serverType.name = "SERVER_TYPE";
-          serverType.value = process.env.SERVER_TYPE;
-          serverType.type = "PLAINTEXT"
-          options.push(serverType)}        
-          if (process.env.VERSION_LABEL !== undefined){
-          versionLabel = {};
-          versionLabel.name = "VERSION_LABEL";
-          versionLabel.value = process.env.VERSION_LABEL;
-          versionLabel.type = "PLAINTEXT"   
-          options.push(versionLabel)}
-          if (process.env.THIS_VERSION !== undefined){
-          thisVersion = {};
-          thisVersion.name = "THIS_VERSION";
-          thisVersion.value = process.env.THIS_VERSION;
-          thisVersion.type = "PLAINTEXT"   
-          options.push(thisVersion)}
-          if (process.env.NEXT_VERSION !== undefined){
-          nextVersion = {};
-          nextVersion.name = "NEXT_VERSION";
-          nextVersion.value = process.env.NEXT_VERSION;
-          nextVersion.type = "PLAINTEXT"
-          options.push(nextVersion)}
+          function testAndPut(KEY) {
+          if (process.env[KEY] !== undefined && process.env[KEY].length!==0){
+          options.push({"name": KEY, "value": process.env[KEY], "type": "PLAINTEXT"});}}
+          testAndPut("SERVER_TYPE")
+          testAndPut("VERSION_LABEL")
+          testAndPut("THIS_VERSION")
+          testAndPut("NEXT_VERSION")
           console.log(JSON.stringify(options));' )
       - name: Iniciando o codebuild de fato
         id: start-build
