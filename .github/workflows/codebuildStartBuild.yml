@@ -55,7 +55,7 @@ jobs:
         run: |
           echo ::set-output name=override::$( node -e 'var options =[];
           function testAndPut(KEY) {
-          if (process.env[KEY] !== undefined && process.env[KEY].length!==0){
+          if (process.env[KEY] !== undefined){
           options.push({"name": KEY, "value": process.env[KEY], "type": "PLAINTEXT"});}}
           testAndPut("SERVER_TYPE")
           testAndPut("VERSION_LABEL")
