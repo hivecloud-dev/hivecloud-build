@@ -72,7 +72,7 @@ jobs:
           nextVersion.name = "NEXT_VERSION";
           nextVersion.value = process.env.NEXT_VERSION;
           nextVersion.type = "PLAINTEXT"
-          options.push(nextVersion)}}
+          options.push(nextVersion)}
           console.log(JSON.stringify(options));' )
       - name: Iniciando o codebuild de fato
         id: start-build
