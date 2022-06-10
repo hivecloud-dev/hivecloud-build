@@ -21,6 +21,10 @@ on:
       versionLabel:
         type: string
         required: false
+      gitdepth:
+        type: string
+        required: false
+        default: 1
     secrets:
       secretKey:
         required: true
@@ -33,6 +37,7 @@ env:
   NEXT_VERSION: ${{ inputs.nextVersion }}
   THIS_VERSION: ${{ inputs.thisVersion }}
   VERSION_LABEL: ${{ inputs.versionLabel }}
+  git-depth: ${{ inputs.gitdepth }}
 
 jobs:
   CodeBuild:
@@ -64,7 +69,7 @@ jobs:
           --buildspec-override='${{env.buildspec-override}}' \
           --project-name=${{env.project-name}} \
           --source-version $GITHUB_SHA \
-          --git-clone-depth-override=1 \
+          --git-clone-depth-override=${{env.git-depth}} \
           --output=text \
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
