@@ -34,7 +34,7 @@ jobs:
 
   export-Start-Codebuild:
     if: github.event.inputs.operacao != 'reload'
-    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    uses: ./.github/workflows/codebuildStartBuild.yml
     with:
       projeto: ${{env.project-name}}
       buildspec: .aws/buildspec-export.yml

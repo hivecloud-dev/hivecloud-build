@@ -1,51 +1,49 @@
 name: VERIFY / DEBUG / SNAPSHOT - Compila a aplicação, podendo ou não subir o servidor
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       servidor:
-        type: choice
-        description: 'Qual o Servidor?'
+        type: string
         required: true
-        options:
-          - debug
-          - verify01
-          - verify02
-          - test
-        default: 'verify01'
+      projeto:
+        type: string
+        required: true
       snapshot:
         type: boolean
-        description: 'Não sobe servidor, apenas gera um snapshot'
-        default: false
+        required: true
+env:
+  project-name: ${{ inputs.projeto }}
+  SERVER_TYPE: ${{ inputs.servidor }}
 jobs:
   verify-Start-Codebuild:
     if: github.event.inputs.servidor != 'debug' && github.event.inputs.snapshot == 'false'
-    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    uses: ./.github/workflows/codebuildStartBuild.yml@main
     with:
-      projeto: hivelog-live
+      projeto: ${{env.project-name}}
       buildspec: .aws/buildspec-compile-launch.yml
-      servidor: ${{ inputs.servidor }}
+      servidor: ${{env.SERVER_TYPE}}
     secrets:
-      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
-      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
+      secretKey: ${{ secrets.secretKey }}
+      accessKey: ${{ secrets.accessKey}}
 
   debug-Start-Codebuild:
     if: github.event.inputs.servidor == 'debug' && github.event.inputs.snapshot == 'false'
-    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    uses: ./.github/workflows/codebuildStartBuild.yml
     with:
-      projeto: hivelog-live
+      projeto: ${{env.project-name}}
       buildspec: .aws/buildspec-compile-debug.yml
       servidor: debug
     secrets:
-      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
-      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
+      secretKey: ${{ secrets.secretKey }}
+      accessKey: ${{ secrets.accessKey}}
   snapshot-Start-Codebuild:
     if: github.event.inputs.snapshot == 'true'
-    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    uses: ./.github/workflows/codebuildStartBuild.yml
     with:
-      projeto: hivelog-live
+      projeto: ${{env.project-name}}
       buildspec: .aws/buildspec-snapshot.yml
       servidor: debug
     secrets:
-      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
-      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
+      secretKey: ${{ secrets.secretKey }}
+      accessKey: ${{ secrets.accessKey}}
