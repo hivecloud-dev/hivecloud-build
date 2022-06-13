@@ -1,0 +1,44 @@
+name: DATABASE - Reload ou export
+
+on:
+  workflow_call:
+    inputs:
+      servidor:
+        type: string
+        required: true
+      projeto:
+        type: string
+        required: true
+      operacao:
+        type: string
+        required: true
+    secrets:
+      secretKey:
+        required: true
+      accessKey:
+        required: true
+env:
+  project-name: ${{ inputs.projeto }}
+  SERVER_TYPE: ${{ inputs.servidor }}
+jobs:
+  reload-Start-Codebuild:
+    if: github.event.inputs.operacao == 'reload'
+    uses: ./.github/workflows/codebuildStartBuild.yml
+    with:
+      projeto: ${{env.project-name}}
+      buildspec: .aws/buildspec-reload.yml
+      servidor: ${{ inputs.servidor }}
+    secrets:
+      secretKey: ${{ secrets.secretKey }}
+      accessKey: ${{ secrets.accessKey}}
+
+  export-Start-Codebuild:
+    if: github.event.inputs.operacao != 'reload'
+    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    with:
+      projeto: ${{env.project-name}}
+      buildspec: .aws/buildspec-export.yml
+      servidor: ${{ inputs.servidor }}
+    secrets:
+      secretKey: ${{ secrets.secretKey }}
+      accessKey: ${{ secrets.accessKey}}

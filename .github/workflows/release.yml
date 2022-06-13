@@ -1,0 +1,59 @@
+name: RELEASE- Gera uma nova versão
+
+on:
+  workflow_dispatch:
+    inputs:
+      proximaVersao:
+        type: String
+        description: 'Informe a próxima versão! (não obrigatório)'
+        required: false
+      validacao:
+        type: String
+        description: 'escreva: RELEASE para poder gerar o release'
+        required: true
+
+jobs:
+  getPomVersion:
+    if: github.ref == 'refs/heads/develop' && github.event.inputs.validacao == 'RELEASE'
+    name: Recupera a versão atual do pom
+    runs-on: ubuntu-latest
+    outputs:
+      thisVersion: ${{steps.pegandoPOM.outputs.pomVersion}}
+      nextVersion: ${{inputs.proximaVersao}}
+    steps:
+      - name: teste de parametros
+        run: |
+          echo ${{github.ref}}
+          echo ${{github.event.inputs.validacao}}
+          echo ${{inputs.validacao}}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Pegando a versão do POM
+        id: pegandoPOM
+        run: |
+          echo ::set-output name=pomVersion::$( \
+          grep -o -i -m 1 -E "<version>.*<\/version>" pom.xml \
+          | cut -d\> -f2 \
+          | cut -d\< -f1 \
+          | cut -d"-" -f1)
+
+
+  chamando-Start-Codebuild:
+    if: success()
+    needs:
+      - getPomVersion
+    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    with:
+      projeto: hivelog-live
+      buildspec: .aws/buildspec-release-version.yml
+      thisVersion: ${{needs.getPomVersion.outputs.thisVersion}}
+      nextVersion: ${{needs.getPomVersion.outputs.nextVersion}}
+      servidor: test
+      gitdepth: 0
+
+    secrets:
+      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
+      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}

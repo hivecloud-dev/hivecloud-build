@@ -1,0 +1,51 @@
+name: VERIFY / DEBUG / SNAPSHOT - Compila a aplicação, podendo ou não subir o servidor
+
+on:
+  workflow_dispatch:
+    inputs:
+      servidor:
+        type: choice
+        description: 'Qual o Servidor?'
+        required: true
+        options:
+          - debug
+          - verify01
+          - verify02
+          - test
+        default: 'verify01'
+      snapshot:
+        type: boolean
+        description: 'Não sobe servidor, apenas gera um snapshot'
+        default: false
+jobs:
+  verify-Start-Codebuild:
+    if: github.event.inputs.servidor != 'debug' && github.event.inputs.snapshot == 'false'
+    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    with:
+      projeto: hivelog-live
+      buildspec: .aws/buildspec-compile-launch.yml
+      servidor: ${{ inputs.servidor }}
+    secrets:
+      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
+      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
+
+  debug-Start-Codebuild:
+    if: github.event.inputs.servidor == 'debug' && github.event.inputs.snapshot == 'false'
+    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    with:
+      projeto: hivelog-live
+      buildspec: .aws/buildspec-compile-debug.yml
+      servidor: debug
+    secrets:
+      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
+      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
+  snapshot-Start-Codebuild:
+    if: github.event.inputs.snapshot == 'true'
+    uses: hivecloud-dev/hivecloud-build/.github/workflows/codebuildStartBuild.yml@main
+    with:
+      projeto: hivelog-live
+      buildspec: .aws/buildspec-snapshot.yml
+      servidor: debug
+    secrets:
+      secretKey: ${{ secrets.AWS_SQA_CODEBUILD_SECRET_KEY }}
+      accessKey: ${{ secrets.AWS_SQA_CODEBUILD_ACCESS_KEY }}
