@@ -41,7 +41,7 @@ env:
   THIS_VERSION: ${{ inputs.thisVersion }}
   VERSION_LABEL: ${{ inputs.versionLabel }}
   git-depth: ${{ inputs.gitdepth }}
-  branch: ${{ inputs.branch }}
+  BRANCH: ${{ inputs.branch }}
 
 jobs:
   CodeBuild:
