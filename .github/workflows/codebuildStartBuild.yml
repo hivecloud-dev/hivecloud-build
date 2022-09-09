@@ -25,6 +25,9 @@ on:
         type: string
         required: false
         default: 1
+      branch:
+        type: string
+        required: false
     secrets:
       secretKey:
         required: true
@@ -38,6 +41,7 @@ env:
   THIS_VERSION: ${{ inputs.thisVersion }}
   VERSION_LABEL: ${{ inputs.versionLabel }}
   git-depth: ${{ inputs.gitdepth }}
+  branch: ${{ inputs.branch }}
 
 jobs:
   CodeBuild:
@@ -68,6 +72,7 @@ jobs:
           aws codebuild start-build \
           --buildspec-override='${{env.buildspec-override}}' \
           --project-name=${{env.project-name}} \
+          --branch=${{env.branch}} \
           --source-version $GITHUB_SHA \
           --git-clone-depth-override=${{env.git-depth}} \
           --output=text \
