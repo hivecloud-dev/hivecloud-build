@@ -65,6 +65,7 @@ jobs:
           testAndPut("VERSION_LABEL")
           testAndPut("THIS_VERSION")
           testAndPut("NEXT_VERSION")
+          testAndPut("BRANCH")
           console.log(JSON.stringify(options));' )
       - name: Iniciando o codebuild de fato
         id: start-build
@@ -72,7 +73,6 @@ jobs:
           aws codebuild start-build \
           --buildspec-override='${{env.buildspec-override}}' \
           --project-name=${{env.project-name}} \
-          --branch=${{env.branch}} \
           --source-version $GITHUB_SHA \
           --git-clone-depth-override=${{env.git-depth}} \
           --output=text \
