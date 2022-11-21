@@ -66,7 +66,7 @@ jobs:
           testAndPut("THIS_VERSION")
           testAndPut("NEXT_VERSION")
           testAndPut("BRANCH")
-          console.log(JSON.stringify(options));' )
+          console.log(JSON.stringify(options));' ) >> $GITHUB_OUTPUT
       - name: Iniciando o codebuild de fato
         id: start-build
         run: |
@@ -78,7 +78,7 @@ jobs:
           --output=text \
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
-          echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 )
+          echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 ) >> $GITHUB_OUTPUT
       - name: Link na saída
         run: |
           echo '[Link para o codebuild](https://console.aws.amazon.com/codesuite/codebuild/projects/${{env.project-name}}/build/${{ steps.start-build.outputs.buildId }})' >> $GITHUB_STEP_SUMMARY
