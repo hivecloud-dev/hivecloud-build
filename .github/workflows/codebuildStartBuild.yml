@@ -49,7 +49,7 @@ jobs:
     name: Job para iniciar um codebuild
     steps:
       - name: Configurando Credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.accessKey}}
           aws-secret-access-key: ${{ secrets.secretKey }}
@@ -57,7 +57,7 @@ jobs:
       - name: Obtendo variáveis para Override
         id: override-variables
         run: |
-          echo ::set-output name=override::$( node -e 'var options =[];
+          echo override=$( node -e 'var options =[];
           function testAndPut(KEY) {
           if (process.env[KEY] !== undefined){
           options.push({"name": KEY, "value": process.env[KEY], "type": "PLAINTEXT"});}}
@@ -78,7 +78,7 @@ jobs:
           --output=text \
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
-          echo ::set-output name=buildId::$( cat  output.txt | head -n 1 | cut -f 8 )
+          echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 )
       - name: Link na saída
         run: |
           echo '[Link para o codebuild](https://console.aws.amazon.com/codesuite/codebuild/projects/${{env.project-name}}/build/${{ steps.start-build.outputs.buildId }})' >> $GITHUB_STEP_SUMMARY
