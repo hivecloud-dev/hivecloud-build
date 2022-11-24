@@ -65,16 +65,16 @@
 		<antcall target="implantar-app"/>
 
 		<echo>Application Label ${build.uuid}</echo>
-		<antcallback target="checar-servidor" return="server.color" />
+		<antcallback target="checar-servidor" return="server.status" />
 
 		<if>
-			<equals arg1="${server.color}" arg2="" />
+			<equals arg1="${server.status}" arg2="" />
 			<then>
 				<antcall target="criar-servidor"/>
 			</then>
 			<else>
 				<if>
-					<equals arg1="${server.color}" arg2="Terminated" />
+					<equals arg1="${server.status}" arg2="Terminated" />
 					<then>
 						<antcall target="criar-servidor"/>
 					</then>
@@ -90,16 +90,16 @@
 	<target name="desligar-servidor" description="Desliga o servidor selecionado">
 
 		<echo>Application Label ${build.uuid}</echo>
-		<antcallback target="checar-servidor" return="server.color" />
+		<antcallback target="checar-servidor" return="server.status" />
 
 		<if>
-			<equals arg1="${server.color}" arg2="" />
+			<equals arg1="${server.status}" arg2="" />
 			<then>
 				<echo>Servidor já está morto, nada a fazer</echo>
 			</then>
 			<else>
 				<if>
-					<equals arg1="${server.color}" arg2="Terminated" />
+					<equals arg1="${server.status}" arg2="Terminated" />
 					<then>
 						<echo>Servidor já está morto, nada a fazer</echo>
 					</then>
@@ -119,17 +119,17 @@
 		<!-- exibe a consulta para referencias -->
 		<echo>"aws elasticbeanstalk describe-environments --application-name='${build.projectName}' | grep ${build.environmentName}"</echo>
 
-		<exec executable="/bin/sh" outputproperty="server.color"  failonerror="true">
+		<exec executable="/bin/sh" outputproperty="server.status"  failonerror="true">
 			<arg value="-c" />
 			<arg value="aws elasticbeanstalk describe-environments
 			--application-name='${build.projectName}'
 			--output text
 			| grep ${build.environmentName}
 			| head -n 1
-			| cut -f 16" />
+			| cut -f 11" />
 		</exec>
 
-		<echo>"COLOR - ${server.color}"</echo>
+		<echo>"STATUS - ${server.status}"</echo>
 
 	</target>
 
