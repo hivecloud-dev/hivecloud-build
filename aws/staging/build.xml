@@ -126,7 +126,7 @@
 			--output text
 			| grep ${build.environmentName}
 			| head -n 1
-			| cut -f 11" />
+			| cut -f 16" />
 		</exec>
 
 		<echo>"STATUS - ${server.status}"</echo>
