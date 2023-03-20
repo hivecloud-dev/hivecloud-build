@@ -81,7 +81,7 @@ jobs:
           echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 ) >> $GITHUB_OUTPUT
       - name: Link na saída
         run: |
-          echo '[Link para o codebuild](https://console.aws.amazon.com/codesuite/codebuild/projects/${{env.project-name}}/build/${{ steps.start-build.outputs.buildId }})' >> $GITHUB_STEP_SUMMARY
+          echo '[Link para o codebuild](https://us-east-1.console.aws.amazon.com/codesuite/codebuild/projects/${{env.project-name}}/build/${{ steps.start-build.outputs.buildId }})' >> $GITHUB_STEP_SUMMARY
           echo 'Variáveis passadas: ${{ steps.override-variables.outputs.override }}' >> $GITHUB_STEP_SUMMARY
 
 
