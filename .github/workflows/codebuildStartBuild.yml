@@ -73,7 +73,7 @@ jobs:
           aws codebuild start-build \
           --buildspec-override='${{env.buildspec-override}}' \
           --project-name=${{env.project-name}} \
-          --source-version $GITHUB_SHA \
+          --source-version ${{ github.head_ref || github.ref_name }} \
           --git-clone-depth-override=${{env.git-depth}} \
           --output=text \
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
