@@ -15,6 +15,9 @@ on:
       nextVersion:
         type: string
         required: false
+      majorVersion:
+        type: string
+        required: false
       thisVersion:
         type: string
         required: false
@@ -38,6 +41,7 @@ env:
   buildspec-override: ${{ inputs.buildspec }}
   SERVER_TYPE: ${{ inputs.servidor }}
   NEXT_VERSION: ${{ inputs.nextVersion }}
+  MAJOR_VERSION: ${{ inputs.majorVersion }}
   THIS_VERSION: ${{ inputs.thisVersion }}
   VERSION_LABEL: ${{ inputs.versionLabel }}
   git-depth: ${{ inputs.gitdepth }}
@@ -65,6 +69,7 @@ jobs:
           testAndPut("VERSION_LABEL")
           testAndPut("THIS_VERSION")
           testAndPut("NEXT_VERSION")
+          testAndPut("MAJOR_VERSION")
           testAndPut("BRANCH")
           console.log(JSON.stringify(options));' ) >> $GITHUB_OUTPUT
       - name: Iniciando o codebuild de fato
