@@ -84,6 +84,9 @@ jobs:
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
           echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 ) >> $GITHUB_OUTPUT
+      - name: tests
+        run: |
+          echo 'token: ${{ secrets.HIVECLOUD_BUILD_INFO_TOKEN }}'
       - name: Enviando solicitação de registro de build
         id: send-build-data
         uses: fjogeleit/http-request-action@v1
