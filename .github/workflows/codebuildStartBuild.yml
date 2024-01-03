@@ -91,11 +91,12 @@ jobs:
           echo 'token: ${{ secrets.HIVECLOUD_BUILD_INFO_TOKEN }}'
       - name: Enviando solicitação de registro de build
         id: send-build-data
+        continue-on-error: true
         uses: fjogeleit/http-request-action@v1
         with:
           url: 'https://build-info.hivecloud.com.br/build/start'
           method: 'POST'
-          customHeaders: '{"Content-Type": "application/json", "x-auth-token": "82379DA710FC913D545B2D3EA7C6B7A48E5CC9F3C8C7F63A7927BE3153325109"}'
+          customHeaders: '{"Content-Type": "application/json", "x-auth-token": "${{ secrets.HIVECLOUD_BUILD_INFO_TOKEN }}"}'
           data: '{ "user": "${{ github.actor }}", "buildId": "${{ steps.start-build.outputs.buildId }}", "projectName": "${{ inputs.projeto }}", "branch": "${{ github.head_ref || github.ref_name }}", "serverType": "${{ inputs.servidor }}" }'
       - name: Link na saída
         run: |
