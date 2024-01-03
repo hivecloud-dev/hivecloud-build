@@ -55,7 +55,7 @@ jobs:
       - name: Configurando Credenciais AWS
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.accessKey}}
+        aws-access-key-id: ${{ secrets.accessKey}}
           aws-secret-access-key: ${{ secrets.secretKey }}
           aws-region: us-east-1
       - name: Obtendo variáveis para Override
@@ -84,6 +84,14 @@ jobs:
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
           echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 ) >> $GITHUB_OUTPUT
+      - name: Enviando solicitação de registro de build
+        id: send-build-data
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://build-info.hivecloud.com.br/build/start'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json", "x-auth-token": "123"}'
+          data: '{ "user": "${{ github.actor }}", "buildId": "${{ steps.start-build.outputs.buildId }}", "projectName": "${{ inputs.projeto }}", "branch": "${{ github.head_ref || github.ref_name }}", "serverType": "${{ inputs.servidor }}" }'
       - name: Link na saída
         run: |
           echo '[Link para o codebuild](https://us-east-1.console.aws.amazon.com/codesuite/codebuild/projects/${{env.project-name}}/build/${{ steps.start-build.outputs.buildId }})' >> $GITHUB_STEP_SUMMARY
