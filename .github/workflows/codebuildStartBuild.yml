@@ -86,9 +86,6 @@ jobs:
           --environment-variables-override '${{ steps.override-variables.outputs.override }}' > output.txt
           cat output.txt
           echo buildId=$( cat  output.txt | head -n 1 | cut -f 8 ) >> $GITHUB_OUTPUT
-      - name: tests
-        run: |
-          echo 'token: ${{ secrets.HIVECLOUD_BUILD_INFO_TOKEN }}'
       - name: Enviando solicitação de registro de build
         id: send-build-data
         continue-on-error: true
@@ -96,7 +93,7 @@ jobs:
         with:
           url: 'https://build-info.hivecloud.com.br/build/start'
           method: 'POST'
-          customHeaders: '{"Content-Type": "application/json", "x-auth-token": "${{ secrets.HIVECLOUD_BUILD_INFO_TOKEN }}"}'
+          customHeaders: '{"Content-Type": "application/json", "x-auth-token": "${{ secrets.buildInfoToken }}"}'
           data: '{ "user": "${{ github.actor }}", "buildId": "${{ steps.start-build.outputs.buildId }}", "projectName": "${{ inputs.projeto }}", "branch": "${{ github.head_ref || github.ref_name }}", "serverType": "${{ inputs.servidor }}" }'
       - name: Link na saída
         run: |
