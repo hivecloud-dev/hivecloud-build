@@ -36,6 +36,8 @@ on:
         required: true
       accessKey:
         required: true
+      buildInfoToken:
+        required: false
 env:
   project-name: ${{ inputs.projeto }}
   buildspec-override: ${{ inputs.buildspec }}
