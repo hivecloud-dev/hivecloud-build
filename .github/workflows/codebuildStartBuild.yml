@@ -31,6 +31,10 @@ on:
       branch:
         type: string
         required: false
+      skipTests:
+        type: boolean
+        required: false
+        default: false
     secrets:
       secretKey:
         required: true
@@ -48,6 +52,7 @@ env:
   VERSION_LABEL: ${{ inputs.versionLabel }}
   git-depth: ${{ inputs.gitdepth }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
+  SKIP_TESTS: ${{ inputs.skipTests }}
 
 jobs:
   CodeBuild:
@@ -73,6 +78,7 @@ jobs:
           testAndPut("NEXT_VERSION")
           testAndPut("MAJOR_VERSION")
           testAndPut("BRANCH")
+          if (process.env.SKIP_TESTS === "true") testAndPut("SKIP_TESTS")
           console.log(JSON.stringify(options));' ) >> $GITHUB_OUTPUT
       - name: Iniciando o codebuild de fato
         id: start-build
